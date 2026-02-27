@@ -1,0 +1,6 @@
+@RpgMongoDb_HostAddress = http://localhost:5228
+
+GET {{RpgMongoDb_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
