@@ -1,41 +1,34 @@
+using RpgMongoDb.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+var connectionString = builder.Configuration["RpgDatabaseSettings:ConnectionString"];
+var databaseName = builder.Configuration["RpgDatabaseSettings:DatabaseName"];
+
+if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseName))
+{
+    throw new Exception("Nedostaje ConnectionString ili DatabaseName u appsettings.json fajlu!");
+}
+
+// Registracija tvojih servisa
+builder.Services.AddSingleton(new MongoDbService(connectionString, databaseName));
+builder.Services.AddSingleton(new ClanService(connectionString, databaseName));
+
+// 1. Klasičan Swagger setup (Obrisano AddOpenApi)
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    // 2. Aktiviranje starog dobrog Swagger interfejsa
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
