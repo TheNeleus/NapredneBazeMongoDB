@@ -12,23 +12,35 @@ if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseName)
     throw new Exception("Nedostaje ConnectionString ili DatabaseName u appsettings.json fajlu!");
 }
 
-// Registracija tvojih servisa
-builder.Services.AddSingleton(new MongoDbService(connectionString, databaseName));
+builder.Services.AddSingleton(new AuctionService(connectionString, databaseName));
 builder.Services.AddSingleton(new ClanService(connectionString, databaseName));
+builder.Services.AddSingleton(new PlayerService(connectionString, databaseName));
+builder.Services.AddSingleton(new ItemService(connectionString, databaseName));
+builder.Services.AddSingleton(new RpgMongoDb.Services.LootBoxService(connectionString, databaseName));
+builder.Services.AddHostedService<RpgMongoDb.BackgroundServices.AuctionBackgroundService>();
 
-// 1. Klasičan Swagger setup (Obrisano AddOpenApi)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    // 2. Aktiviranje starog dobrog Swagger interfejsa
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.MapControllers();
 app.Run();

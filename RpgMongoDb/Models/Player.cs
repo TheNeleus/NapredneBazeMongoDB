@@ -18,7 +18,7 @@ namespace RpgMongoDb.Models
 
         [BsonElement("clan_id")]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? ClanId { get; set; } // Reference to Clan collection
+        public string? ClanId { get; set; } 
 
         [BsonElement("inventory")]
         public List<Item> Inventory { get; set; } = new List<Item>();

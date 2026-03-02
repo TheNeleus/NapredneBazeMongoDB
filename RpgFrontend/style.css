@@ -1,0 +1,29 @@
+body {
+    background: radial-gradient(circle, #2c3e50 0%, #000000 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+    border: 2px solid #573403; 
+    border-radius: 15px;
+}
+
+.btn-warning {
+    background-color: #8cadbb;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-warning:hover {
+    background-color: #d4ac0d;
+    transform: scale(1.05);
+}
+
+.text-common { color: #aaaaaa !important; }       
+.text-uncommon { color: #2ecc71 !important; }     
+.text-rare { color: #3498db !important; }         
+.text-epic { color: #9b59b6 !important; }         
+.text-legendary { color: #f1c40f !important; }    
+.text-mythic { color: #e74c3c !important; text-shadow: 0 0 5px #e74c3c; } 
+
+.lootbox-card { border: 2px dashed #0dcaf0; }

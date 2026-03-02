@@ -10,25 +10,25 @@ namespace RpgMongoDb.Controllers
     [Route("api/[controller]")]
     public class AuctionController : ControllerBase
     {
-        private readonly MongoDbService _mongoDbService;
+        private readonly AuctionService _auctionService;
 
-        // Dependency Injection servisa za bazu
-        public AuctionController(MongoDbService mongoDbService)
+        public AuctionController(AuctionService auctionService)
         {
-            _mongoDbService = mongoDbService;
+            _auctionService = auctionService;
         }
 
-        // POST: api/auction/create
         [HttpPost("create")]
         public async Task<IActionResult> CreateAuction(
             [FromQuery] string playerId, 
             [FromQuery] string itemId, 
-            [FromQuery] decimal startingPrice)
+            [FromQuery] int quantity, 
+            [FromQuery] decimal startingPrice, 
+            [FromQuery] int durationInHours)
         {
             try
             {
-                await _mongoDbService.CreateAuctionAsync(playerId, itemId, startingPrice);
-                return Ok(new { message = "Item successfully placed on auction!" });
+                await _auctionService.CreateAuctionAsync(playerId, itemId, quantity, startingPrice, durationInHours);
+                return Ok(new { message = "Predmet uspešno postavljen na aukciju!" });
             }
             catch (Exception ex)
             {
@@ -36,13 +36,12 @@ namespace RpgMongoDb.Controllers
             }
         }
 
-        // GET: api/auction/active
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveAuctions()
         {
             try
             {
-                var auctions = await _mongoDbService.GetActiveAuctionsAsync();
+                var auctions = await _auctionService.GetActiveAuctionsAsync();
                 return Ok(auctions);
             }
             catch (Exception ex)
@@ -51,22 +50,31 @@ namespace RpgMongoDb.Controllers
             }
         }
 
-        // POST: api/auction/bid
-        // NOVI ENDPOINT za bidovanje
         [HttpPost("bid")]
-        public async Task<IActionResult> PlaceBid(
-            [FromQuery] string auctionId, 
-            [FromQuery] string playerId, 
-            [FromQuery] decimal bidAmount)
+        public async Task<IActionResult> PlaceBid([FromQuery] string auctionId, [FromQuery] string playerId, [FromQuery] decimal bidAmount)
         {
             try
             {
-                await _mongoDbService.PlaceBidAsync(auctionId, playerId, bidAmount);
-                return Ok(new { message = "Bid successfully placed!" });
+                await _auctionService.PlaceBidAsync(auctionId, playerId, bidAmount);
+                return Ok(new { message = "Uspešno ste licitirali!" });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPost("resolve")]
+        public async Task<IActionResult> ResolveAuctions()
+        {
+            try
+            {
+                await _auctionService.ResolveExpiredAuctionsAsync();
+                return Ok(new { message = "Sve istekle aukcije su uspešno razrešene!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
             }
         }
     }

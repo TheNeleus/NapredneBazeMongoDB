@@ -17,7 +17,6 @@ namespace RpgMongoDb.Controllers
             _clanService = clanService;
         }
 
-        // POST: api/clan/create
         [HttpPost("create")]
         public async Task<IActionResult> CreateClan([FromBody] Clan newClan)
         {
@@ -32,7 +31,6 @@ namespace RpgMongoDb.Controllers
             }
         }
 
-        // POST: api/clan/join
         [HttpPost("join")]
         public async Task<IActionResult> JoinClan([FromQuery] string playerId, [FromQuery] string clanId)
         {
@@ -47,7 +45,6 @@ namespace RpgMongoDb.Controllers
             }
         }
 
-        // GET: api/clan/leaderboard
         [HttpGet("leaderboard")]
         public async Task<IActionResult> GetLeaderboard()
         {
@@ -55,6 +52,20 @@ namespace RpgMongoDb.Controllers
             {
                 var leaderboard = await _clanService.GetTopClansByWealthAsync();
                 return Ok(leaderboard);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllClans()
+        {
+            try
+            {
+                var clans = await _clanService.GetAllClansAsync();
+                return Ok(clans);
             }
             catch (Exception ex)
             {

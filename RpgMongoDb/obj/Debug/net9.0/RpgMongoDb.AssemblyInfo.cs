@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RpgMongoDb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3c6a0d3d9bdaa9b972aabb7e63f35268e2325e99")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0ddb227351b3cd0ab91718e6845019cc79c479f0")]
 [assembly: System.Reflection.AssemblyProductAttribute("RpgMongoDb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RpgMongoDb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
