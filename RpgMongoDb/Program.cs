@@ -1,3 +1,4 @@
+using MongoDB.Driver;
 using RpgMongoDb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,11 +13,13 @@ if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseName)
     throw new Exception("Nedostaje ConnectionString ili DatabaseName u appsettings.json fajlu!");
 }
 
-builder.Services.AddSingleton(new AuctionService(connectionString, databaseName));
-builder.Services.AddSingleton(new ClanService(connectionString, databaseName));
-builder.Services.AddSingleton(new PlayerService(connectionString, databaseName));
-builder.Services.AddSingleton(new ItemService(connectionString, databaseName));
-builder.Services.AddSingleton(new RpgMongoDb.Services.LootBoxService(connectionString, databaseName));
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
+builder.Services.AddSingleton<AuctionService>();
+builder.Services.AddSingleton<ClanService>();
+builder.Services.AddSingleton<PlayerService>();
+builder.Services.AddSingleton<ItemService>();
+builder.Services.AddSingleton<LootBoxService>();
+
 builder.Services.AddHostedService<RpgMongoDb.BackgroundServices.AuctionBackgroundService>();
 
 builder.Services.AddEndpointsApiExplorer();

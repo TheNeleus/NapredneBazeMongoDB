@@ -32,6 +32,47 @@ async function updatePlayerHeader(player) {
     }
 }
 
+async function register() {
+    const username = document.getElementById('regUsername').value.trim();
+    const messageDiv = document.getElementById('regMessage');
+    
+    if (!username) {
+        messageDiv.innerHTML = `<span class="text-warning">Korisničko ime je obavezno!</span>`;
+        return;
+    }
+
+    const newPlayer = {
+        username: username,
+        gold: 100,       
+        inventory: []    
+    };
+
+    try {
+        messageDiv.innerHTML = `<span class="text-light">Kreiranje naloga...</span>`;
+        
+        const response = await fetch(`${API_URL}/player/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newPlayer)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            messageDiv.innerHTML = `<span class="text-success">Nalog uspešno kreiran! Preusmeravanje...</span>`;
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 1500);
+        } else {
+            messageDiv.innerHTML = `<span class="text-danger">Greška: ${data.error}</span>`;
+        }
+    } catch (error) {
+        messageDiv.innerHTML = `<span class="text-danger">Greška u komunikaciji sa serverom.</span>`;
+    }
+}
+
 async function login() {
     const username = document.getElementById('username').value;
     const messageDiv = document.getElementById('message');
@@ -204,7 +245,7 @@ async function fetchActiveAuctions() {
                             ${statusBadge}
                         </div>
                         <div class="card-body p-3">
-                            <h4 class="text-warning mb-3">🪙 ${auction.currentBid}</h4>
+                            <h4 class="text-warning mb-3"><span class="coin-icon"></span> ${auction.currentBid}</h4>
                             ${isMyAuction ? 
                                 `<p class="text-success small fw-bold">Ovo je vaša aukcija.</p>` : 
                                 `
@@ -283,7 +324,7 @@ async function fetchLeaderboard() {
                     <td class="text-center fw-bold fs-5">${medal}</td>
                     <td class="text-white fw-bold align-middle" style="letter-spacing: 0.5px;">${clan.clanName}</td>
                     <td class="text-center align-middle">${clan.members}</td>
-                    <td class="text-warning fw-bold text-end align-middle">🪙 ${clan.totalGold}</td>
+                    <td class="text-warning fw-bold text-end align-middle"><span class="coin-icon"></span> ${clan.totalGold}</td>
                 </tr>
             `;
         });

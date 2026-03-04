@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using RpgMongoDb.Models;
 using System.Collections.Generic;
@@ -9,10 +10,9 @@ namespace RpgMongoDb.Services
     {
         private readonly IMongoCollection<GameItem> _itemsCollection;
 
-        public ItemService(string connectionString, string databaseName)
+        public ItemService(IMongoClient client, IConfiguration config)
         {
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase(databaseName);
+            var database = client.GetDatabase(config["RpgDatabaseSettings:DatabaseName"]);
             
             _itemsCollection = database.GetCollection<GameItem>("GameItems");
         }

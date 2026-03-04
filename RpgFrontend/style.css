@@ -27,3 +27,44 @@ body {
 .text-mythic { color: #e74c3c !important; text-shadow: 0 0 5px #e74c3c; } 
 
 .lootbox-card { border: 2px dashed #0dcaf0; }
+
+.text-warning { color: #e0b038 !important; } 
+.border-warning { border-color: #e0b038 !important; }
+
+.text-info { color: #5bc0de !important; } 
+.border-info { border-color: #3898b5 !important; }
+
+.text-success { color: #5cb85c !important; } 
+.border-success { border-color: #5cb85c !important; }
+
+::selection {
+    background: #8cadbb; 
+    color: #111;
+}
+
+.coin-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle at 30% 30%, #ffdf00, #d4af37 70%, #996515);
+    border-radius: 50%;
+    border: 2px solid #7a5210;
+    box-shadow: 
+        inset 1px 1px 2px rgba(255, 255, 255, 0.8),
+        inset -1px -1px 2px rgba(0, 0, 0, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.6);
+    margin-right: 6px;
+    vertical-align: text-bottom;
+    position: relative;
+}
+
+.coin-icon::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    border-radius: 50%;
+    border: 1px solid rgba(122, 82, 16, 0.4);
+}

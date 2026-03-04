@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using RpgMongoDb.Models;
 using System;
@@ -14,10 +15,10 @@ namespace RpgMongoDb.Services
         private readonly IMongoCollection<Player> _playersCollection;
         private readonly IMongoCollection<Auction> _auctionsCollection;
 
-        public AuctionService(string connectionString, string databaseName) 
+        public AuctionService(IMongoClient client, IConfiguration config) 
         {
-            _client = new MongoClient(connectionString);
-            _database = _client.GetDatabase(databaseName);
+            _client = client;
+            _database = _client.GetDatabase(config["RpgDatabaseSettings:DatabaseName"]);
             
             _playersCollection = _database.GetCollection<Player>("Players");
             _auctionsCollection = _database.GetCollection<Auction>("Auctions");
@@ -60,7 +61,7 @@ namespace RpgMongoDb.Services
                         Builders<Player>.Filter.Eq(p => p.Id, playerId),
                         Builders<Player>.Filter.ElemMatch(p => p.Inventory, i => i.ItemId == itemId)
                     );
-                    var update = Builders<Player>.Update.Inc("inventory.$.quantity", -quantityToSell);
+                    var update = Builders<Player>.Update.Inc("Inventory.$.Quantity", -quantityToSell);
                     await _playersCollection.UpdateOneAsync(session, filter, update);
                 }
 
@@ -175,7 +176,7 @@ namespace RpgMongoDb.Services
                                     Builders<Player>.Filter.Eq(p => p.Id, auction.HighestBidderId),
                                     Builders<Player>.Filter.ElemMatch(p => p.Inventory, i => i.ItemId == auction.Item.ItemId)
                                 );
-                                var buyerItemUpdate = Builders<Player>.Update.Inc("inventory.$.quantity", auction.Item.Quantity);
+                                var buyerItemUpdate = Builders<Player>.Update.Inc("Inventory.$.Quantity", auction.Item.Quantity);
                                 await _playersCollection.UpdateOneAsync(session, buyerFilter, buyerItemUpdate);
                             }
                             else
@@ -200,7 +201,7 @@ namespace RpgMongoDb.Services
                                     Builders<Player>.Filter.Eq(p => p.Id, auction.SellerId),
                                     Builders<Player>.Filter.ElemMatch(p => p.Inventory, i => i.ItemId == auction.Item.ItemId)
                                 );
-                                var sellerItemUpdate = Builders<Player>.Update.Inc("inventory.$.quantity", auction.Item.Quantity);
+                                var sellerItemUpdate = Builders<Player>.Update.Inc("Inventory.$.Quantity", auction.Item.Quantity);
                                 await _playersCollection.UpdateOneAsync(session, sellerFilter, sellerItemUpdate);
                             }
                             else

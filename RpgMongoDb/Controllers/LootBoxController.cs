@@ -30,5 +30,19 @@ namespace RpgMongoDb.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateLootBox([FromBody] LootBox newBox)
+        {
+            try
+            {
+                await _lootBoxService.CreateLootBoxAsync(newBox);
+                return Ok(new { message = "Loot box uspešno kreiran!" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }

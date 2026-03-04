@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using RpgMongoDb.Models;
 using System.Collections.Generic;
@@ -9,16 +10,20 @@ namespace RpgMongoDb.Services
     {
         private readonly IMongoCollection<LootBox> _lootBoxesCollection;
 
-        public LootBoxService(string connectionString, string databaseName)
+        public LootBoxService(IMongoClient client, IConfiguration config)
         {
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase(databaseName);
+            var database = client.GetDatabase(config["RpgDatabaseSettings:DatabaseName"]);
             _lootBoxesCollection = database.GetCollection<LootBox>("LootBoxes");
         }
 
         public async Task<List<LootBox>> GetAllLootBoxesAsync()
         {
             return await _lootBoxesCollection.Find(_ => true).ToListAsync();
+        }
+
+        public async Task CreateLootBoxAsync(LootBox newBox)
+        {
+            await _lootBoxesCollection.InsertOneAsync(newBox);
         }
     }
 }

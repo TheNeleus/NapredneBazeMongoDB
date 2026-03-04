@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using RpgMongoDb.Models;
@@ -11,10 +12,9 @@ namespace RpgMongoDb.Services
         private readonly IMongoCollection<Clan> _clansCollection;
         private readonly IMongoCollection<Player> _playersCollection;
 
-        public ClanService(string connectionString, string databaseName)
+        public ClanService(IMongoClient client, IConfiguration config)
         {
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase(databaseName);
+            var database = client.GetDatabase(config["RpgDatabaseSettings:DatabaseName"]);
 
             _clansCollection = database.GetCollection<Clan>("Clans");
             _playersCollection = database.GetCollection<Player>("Players");
@@ -76,7 +76,7 @@ namespace RpgMongoDb.Services
                 leaderboard.Add(new ClanLeaderboardItem
                 {
                     ClanName = doc["ClanName"].AsString,
-                    TotalGold = doc["TotalGold"].ToDecimal(),
+                    TotalGold = (decimal)doc["TotalGold"].ToDouble(),
                     Members = doc["Members"].ToInt32()
                 });
             }
