@@ -36,16 +36,18 @@ docker compose up -d
 ⚠️ VAŽAN KORAK (Inicijalizacija Replica Set-a):
 Pošto se koriste transakcije, MongoDB mora da radi u Replica Set režimu. Sačekajte par sekundi da se kontejner podigne, a zatim u terminalu obavezno pokrenite ovu komandu da biste ga inicijalizovali:
 
-Bash
+```bash
 docker exec -it rpg-mongo-rs mongosh --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]})"
+```
 (Očekivani odgovor je da sadrži "ok": 1)
 
 ### 3. Pokretanje Backenda
 Pozicionirajte se u folder backend projekta (gde se nalazi .csproj fajl) i pokrenite API:
 
-Bash
+```bash
 dotnet watch run
-Backend će se pokrenuti na portu 5228 (ili sličnom, proverite terminal).
+```
+Backend će se pokrenuti na portu 5228.
 Možete pristupiti bazi i dodati početne "Loot Box"-ove i "Item"-e preko Swagger interfejsa na adresi: http://localhost:5228/swagger
 
 ### 4. Pokretanje Frontenda
